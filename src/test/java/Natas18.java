@@ -31,14 +31,10 @@ public class Natas18 extends BaseClass {
         params.put("password", "secret");
         params.put("debug", "y");
         for (int i = 0; i < numberOfRequests; i++) {
+            int finalI = i;
             executorService.submit(() -> {
-                Response response = getRequestWithParams(url, authToken, params);
+                Response response = getRequestWithParamsAndCookie(url, authToken, params, "PHPSESSID", Integer.toString(finalI));
                 Document doc = Jsoup.parse(response.getBody().asString());
-
-                if (Integer.parseInt(response.getCookie("PHPSESSID")) > 600) {
-                    System.out.println(response.getCookie("PHPSESSID"));
-                }
-
                 try {
                     writeTextToFile("src/test/resources/responses.txt", doc.select("#content").text() +
                             " " + response.getHeader("Date") + " " + response.getCookie("PHPSESSID"));
@@ -50,5 +46,6 @@ public class Natas18 extends BaseClass {
         executorService.shutdown();
         executorService.awaitTermination(100, TimeUnit.SECONDS);
      }
+
     }
 
