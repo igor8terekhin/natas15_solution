@@ -16,6 +16,15 @@ public class BaseClass {
                 .andReturn();
     }
 
+    public Response getRequestWithParamsAndCookie(String url, String authToken, Map<String, String> params, String cookieName, String cookie) {
+        return given()
+                .header(new Header("Authorization", authToken))
+                .queryParams(params)
+                .cookie(cookieName, cookie)
+                .get(url)
+                .andReturn();
+    }
+
     public void writeTextToFile(String fileName, String text) throws IOException {
         try(FileWriter fw = new FileWriter(fileName, true);
             BufferedWriter bw = new BufferedWriter(fw);
@@ -31,6 +40,12 @@ public class BaseClass {
         Headers headers = response.getHeaders();
 
         return headers.getValue(name);
+    }
+
+    protected String getCookie(Response response, String name) {
+        Map<String, String> cookies = response.getCookies();
+
+        return cookies.get(name);
     }
 
 }
